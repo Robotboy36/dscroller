@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>滚动该有的样子</title>
+    <!-- 滚动条样式，需要使用滚动条时引入 -->
+    <link rel="stylesheet" href="./lib/es5/index.css">
+
+    <script type="text/javascript" src="./lib/es5/Animate.js"></script>
+    <script type="text/javascript" src="./lib/es5/Scroller.js"></script>
+    <script type="text/javascript" src="./lib/es5/DOMScroll.js"></script>
+
+    <!-- 页面样式 -->
+    <link rel="stylesheet" href="/css/demo.css">
+</head>
+<body>
+    <div class="app">
+        <div class="scroll-list">
+            <div class="other">
+                我是其他内容
+            </div>
+            <nav class="navs">
+                <ul>
+                    <li data-index="0" class="active">中文</li>
+                    <li data-index="1">英语</li>
+                    <li data-index="2">法语</li>
+                </ul>
+            </nav>
+            <div class="list">
+                <div class="list-container">
+                    <h2>中文频道</h2>
+                    <ul>
+                        <li>这是中文频道 1</li>
+                        <li>这是中文频道 2</li>
+                        <li>这是中文频道 3</li>
+                        <li>这是中文频道 4</li>
+                        <li>这是中文频道 5</li>
+                        <li>这是中文频道 6</li>
+                        <li>这是中文频道 7</li>
+                        <li>这是中文频道 8</li>
+                        <li>这是中文频道 9</li>
+                        <li>这是中文频道 10</li>
+                        <li>这是中文频道 11</li>
+                        <li>这是中文频道 12</li>
+                        <li>这是中文频道 13</li>
+                        <li>这是中文频道 14</li>
+                        <li>这是中文频道 15</li>
+                        <li>这是中文频道 16</li>
+                        <li>这是中文频道 17</li>
+                        <li>这是中文频道 18</li>
+                        <li>这是中文频道 19</li>
+                        <li>这是中文频道 20</li>
+                    </ul>
+                </div>
+                <div class="list-container">
+                    <h2>英文频道</h2>
+                    <ul>
+                        <li>this english way 1</li>
+                        <li>this english way 2</li>
+                        <li>this english way 3</li>
+                        <li>this english way 4</li>
+                        <li>this english way 5</li>
+                        <li>this english way 6</li>
+                        <li>this english way 7</li>
+                        <li>this english way 8</li>
+                        <li>this english way 9</li>
+                        <li>this english way 10</li>
+                        <li>this english way 11</li>
+                        <li>this english way 12</li>
+                        <li>this english way 13</li>
+                        <li>this english way 14</li>
+                        <li>this english way 15</li>
+                        <li>this english way 16</li>
+                        <li>this english way 17</li>
+                        <li>this english way 18</li>
+                        <li>this english way 19</li>
+                        <li>this english way 20</li>
+                    </ul>
+                </div>
+                <div class="list-container">
+                    <h2>法语频道</h2>
+                    <ul>
+                        <li>C 'est la chaîne française 1</li>
+                        <li>C 'est la chaîne française 2</li>
+                        <li>C 'est la chaîne française 3</li>
+                        <li>C 'est la chaîne française 4</li>
+                        <li>C 'est la chaîne française 5</li>
+                        <li>C 'est la chaîne française 6</li>
+                        <li>C 'est la chaîne française 7</li>
+                        <li>C 'est la chaîne française 8</li>
+                        <li>C 'est la chaîne française 9</li>
+                        <li>C 'est la chaîne française 10</li>
+                        <li>C 'est la chaîne française 11</li>
+                        <li>C 'est la chaîne française 12</li>
+                        <li>C 'est la chaîne française 13</li>
+                        <li>C 'est la chaîne française 14</li>
+                        <li>C 'est la chaîne française 15</li>
+                        <li>C 'est la chaîne française 16</li>
+                        <li>C 'est la chaîne française 17</li>
+                        <li>C 'est la chaîne française 18</li>
+                        <li>C 'est la chaîne française 19</li>
+                        <li>C 'est la chaîne française 20</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // alert('Animate: ' + typeof Animate); 
+        // alert('Scroller: ' + typeof Scroller);
+        // alert('DOMScroller: ' + typeof DOMScroller);
+        // alert('TEST' + TEST); 
+
+        var navsEl = document.querySelector('.navs');
+        var navPos = navsEl.getBoundingClientRect();
+        var navsTop = navPos.top;
+        // console.log(navPos.top, navPos.height);
+        // 是否吸顶标识
+        var isFixedTop = false;
+
+        // 当前语言下标
+        // 点击滚动到指定位置
+        var curLanguageIndex = 0;
+
+        // 各频道距离顶部的位置，便于计算对比
+        // 格式： [1112, 2222, 3333]
+        var posData = [];
+
+        // 初始化位置
+        initListPos();
+        events();
+        console.log('posData', posData);
+
+        // 滚动的列表
+        var content = document.querySelector('.scroll-list');
+        // 初始化 scroller
+        var scroller = new DOMScroller(content, {
+            scrollingX: false,
+            scrollingY: true,
+            scrollbars: true,
+
+            // 禁止临界点回弹
+            // bouncing: false,
+
+            onScroll: function (x, y, scale) {
+                // 吸顶元素控制
+                if (y >= navsTop && !isFixedTop) {
+                    var el = navsEl.cloneNode(true);
+                    el.id = 'navs_fixed_top';
+                    el.onclick = navsEl.onclick;
+
+                    document.body.appendChild(el);
+                    isFixedTop = true;
+
+                } else if (y < navsTop && isFixedTop) {
+                    var el = document.querySelector('#navs_fixed_top');
+                    el && el.remove();
+                    isFixedTop = false;
+                }
+            },
+
+            onComplete (pos) {
+                // console.log('完成', pos);
+                var y = pos.top;
+                // 频道激活检测
+                // 整体比较，保留最后一个
+                // 排除当前， 避免重复计算
+                var index = curLanguageIndex;
+                for (var i = 0; i < posData.length; i++) {
+                    if (y >= posData[i]) {
+                        index = i;
+                    }
+                }
+
+                if (index !== curLanguageIndex) {
+                    curLanguageIndex = index;
+                    updateNavs();
+                }
+            }
+        });
+
+
+        function initListPos () {
+            var lists = document.querySelectorAll('.list-container');
+
+            // forEach 属于es5规范中数组的循环遍历方法
+            // 元素集合 是 NodeList类型，不一定有这个方法
+            // 这里将元素集合 转换为数组，再调用forEach方法
+            [].slice.apply(lists).forEach(function (el, index) {
+                posData[index] = el.getBoundingClientRect().top - navPos.height;
+            });
+        }
+
+
+        // 更新导航当前频道
+        function updateNavs () {
+            var navItems = navsEl.querySelectorAll('li');
+            [].slice.apply(navItems).forEach(function (item, index) {
+                item.className = curLanguageIndex === index ? 'active' : '';
+            });
+
+            // 固定元素
+            var fixNavEl = document.querySelector('#navs_fixed_top');
+            console.log('fixNavEl', fixNavEl, curLanguageIndex);
+            if (fixNavEl) {
+                var items = fixNavEl.querySelectorAll('li');
+
+                [].slice.apply(items).forEach(function (item, index) {
+                    item.className = curLanguageIndex === index ? 'active' : '';
+                });
+            }
+        }
+
+
+        function events () {
+            navsEl.onclick = function (e) {
+                var target = e.target;
+
+                if (target.tagName === 'LI') {
+                    var index = target.getAttribute('data-index') - 0;
+                    var top = posData[index]
+
+                    // console.log(top);
+                    scroller.scrollTo(top);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
