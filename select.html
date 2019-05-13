@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>滑动选择器</title>
+    <link rel="stylesheet" href="css/select.css">
+</head>
+<body>
+    <div class="select-layout">
+        <div class="mask"></div>
+        <div class="select-container">
+            <div class="select-header">
+                <span class="btn select-cancel">取消</span>
+                <h2 class="select-title">转换产品</h2>
+                <span class="btn select-confirm">确认</span>
+            </div>
+            <div class="select-content">
+                <div class="select-list-item-split">&nbsp;</div>
+                <ul class="select-list">
+                    <li class="select-list-active">中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                    <li>中华人民共和国第32旅7团步天特战队</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./lib/es5/Animate.js"></script>
+    <script type="text/javascript" src="./lib/es5/Scroller.js"></script>
+    <script type="text/javascript" src="./lib/es5/index.js"></script>
+    <script>
+        let data = []
+        let contentEl = document.querySelector('.select-content')
+        let listEl = document.querySelector('.select-list')
+        let splitEl = document.querySelector('.select-list-item-split')
+        let contentRect = contentEl.getBoundingClientRect()
+        let scroller = null
+        let curSelectedItem = {
+            index: 1,
+            title: ''
+        }
+        let pageNo = 1,
+            pageSize = 10;
+
+        loadData()
+
+        function loadData () {
+            let list = []
+            for (let i = 0; i < 10; i++) {
+                let index = (pageNo - 1) * pageSize + i + 1
+                list.push({
+                    index,
+                    title: '中华人民共和国第32旅7团步天特战队'
+                })
+            }
+
+            if (pageNo === 1) {
+                data = list
+            } else {
+                data = data.concat(list)
+            }
+
+            render()
+            updateScroll()
+        }
+
+        function updateScroll () {
+            let listItem = listEl.children[0]
+            let listItemRect = listItem.getBoundingClientRect()
+
+            if (scroller && scroller.destroy) {
+                console.log('注销')
+                scroller.destroy()
+            }
+
+            // 初始化 scroller
+            scroller = new DOMScroller(listEl, {
+                scrollingX: false,
+                scrollingY: true,
+                scrollbars: true,
+
+                // 禁止临界点回弹
+                // bouncing: false,
+
+                onScroll: function (x, y, scale) {
+                    let index = Math.round(Math.abs(y) / listItemRect.height)
+                    curSelectedItem = data[index] || curSelectedItem
+                    setActive()
+                },
+
+                onComplete (pos) {
+                    let y = pos.top;
+                    // scroller.scrollTo(listItemRect.height * curSelectedItem.index)
+                    console.log('滚动完成', listItemRect.height * curSelectedItem.index)
+                }
+            });
+        }
+
+        function render () {
+            // 前后填充元素
+            let listItem = listEl.children[0]
+            let listItemRect = listItem.getBoundingClientRect()
+            let count = Math.round(contentRect.height / listItemRect.height / 2)
+            console.log('空闲个数', count)
+
+            // 设置间隔元素位置
+            splitEl.style.cssText = `top: ${count * listItemRect.height}px`
+
+            // 前置临时元素
+            let tempItemsHtml = ''
+            for (let i = 0; i < count; i++) {
+                tempItemsHtml += '<li class="empty">&nbsp;</li>'
+            }
+
+            let html = tempItemsHtml
+            // 正常可选数据
+            data.forEach(item => {
+                html += `<li data-index="${item.index}"
+                    class="${item.index === curSelectedItem.index ? 'select-list-active' : ''}">
+                    ${item.index} ${item.title}</li>`
+            })
+
+            html += tempItemsHtml
+            listEl.innerHTML = html;
+        }
+
+        function setActive () {
+            let children = listEl.children;
+            [].forEach.call(children, function (el) {
+                let index = el.getAttribute('data-index') - 0
+
+                el.classList.remove('select-list-active')
+                if (index === curSelectedItem.index) {
+                    el.classList.add('select-list-active')
+                }
+            })
+        }
+
+        function setScrollPosition () {
+
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+
+ul, h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.select-layout,
+.mask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+}
+
+.mask {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.select-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 400px;
+    background: #fff;
+}
+
+.select-header {
+    display: flex;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.select-header .btn {
+    display: block;
+    width: 60px;
+    cursor: pointer;
+    color: #999;
+    font-size: 14px;
+}
+.select-header .select-confirm {
+    text-align: right;
+    color: #fa810f;
+}
+.select-title {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.select-content {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+}
+.select-list {
+    padding: 0 20px;
+    list-style: none;
+    text-align: center;
+    color: #999;
+}
+
+.select-list li,
+.select-list-item-split {
+    padding: 15px 0;
+    line-height: 1;
+}
+/* .select-list li.empty,
+.select-list li:last-child {
+    border-bottom: none;
+} */
+.select-list .select-list-active {
+    color: #333;
+}
+
+.select-list-item-split {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 150px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    z-index: 3;
+}
